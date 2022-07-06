@@ -94,7 +94,7 @@ def setup(hass, config):
             list = parse_qs(urlparse(url).query).get("list")
             if list != None:
                 return get_id_in_playlist(list[0])
-            return parse_qs(urlparse(url).query).get("v")
+            return parse_qs(urlparse(url).query).get("v")[0]
         elif (url.find('youtu.be/') != -1):
             urstart_id_idex = url.find('youtu.be/') + len("youtu.be/")
             id = url[urstart_id_idex:]
