@@ -13,8 +13,7 @@
     "files": [
       "__init__.pyc",
       "manifest.json",
-      "services.yaml",
-      "youtube_assistant.so"
+      "services.yaml"
     ]
   }
 }
