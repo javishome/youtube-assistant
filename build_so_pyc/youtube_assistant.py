@@ -1,4 +1,3 @@
-# encoding: utf-8
 import json
 import requests
 import random
@@ -83,14 +82,16 @@ def return_url_from_id(result):
     return result
 def getVideoId(url):
     if (url.find('watch?v=') != -1):
-        list = parse_qs(urlparse(url).query).get("list")
-        if list != None:
-            return ""
         return parse_qs(urlparse(url).query).get("v")
     elif (url.find('youtu.be/') != -1):
         urstart_id_idex = url.find('youtu.be/') + len("youtu.be/")
         id = url[urstart_id_idex:]
         return id
+    return ""
+def getListId(url):
+    if (url.find('watch?v=') != -1):
+        list = parse_qs(urlparse(url).query).get("list")
+        return list
     return ""
 def return_url_from_id(id):
     url = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
