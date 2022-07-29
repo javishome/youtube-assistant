@@ -18,7 +18,7 @@ SERVICE_PLAY_LIST = 'play_list'
 # config
 # CONF_API_KEY = 'api_key'
 # data service
-ATTR_PLAYER_ID = 'entity_id'
+# ATTR_PLAYER_ID = 'entity_id'
 ATTR_NAME = 'name'
 ATTR_SONG_ID = 'song_id'
 ATTR_URL = 'url'
@@ -27,7 +27,7 @@ ATTR_LIST_ID = 'list_id'
 ATTR_REPEAT = 'repeat'
 
 SERVICE_SONG = vol.Schema({
-        vol.Required(ATTR_PLAYER_ID): cv.comp_entity_ids,
+        vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
         vol.Optional(ATTR_SONG_ID, default=""): cv.string,
         vol.Optional(ATTR_URL, default=""): cv.string,
         vol.Optional(ATTR_NAME, default=""): cv.string,
@@ -36,7 +36,7 @@ SERVICE_SONG = vol.Schema({
     }
 )
 SERVICE_LIST = vol.Schema({
-        vol.Required(ATTR_PLAYER_ID): cv.comp_entity_ids,
+        vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
         vol.Optional(ATTR_LIST_ID, default=""): cv.string,
         vol.Optional(ATTR_URL, default=""): cv.string   
     }
@@ -47,7 +47,7 @@ def setup(hass, config):
         hass.services.call('mass', 'queue_command', service_data)
     def tts_handler(service):
 
-        entity_id = service.data[ATTR_PLAYER_ID]
+        entity_id = service.data[ATTR_ENTITY_ID]
         service_data = {}
         clear_queue(entity_id)
         if service.service == SERVICE_PLAY_LIST:
