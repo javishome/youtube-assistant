@@ -65,7 +65,7 @@ play_song:
       default: 5
       selector:
         number:
-          min: 0
+          min: 1
           max: 10
     repeat:
       description: Repeat one song
@@ -73,3 +73,4 @@ play_song:
       default: false
       selector:
         boolean:
+          

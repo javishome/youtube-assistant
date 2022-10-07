@@ -32,7 +32,7 @@ SERVICE_SONG = vol.Schema({
         vol.Optional(ATTR_URL, default=""): cv.string,
         vol.Optional(ATTR_NAME, default=""): cv.string,
         vol.Optional(ATTR_REPEAT, default=False): cv.boolean,
-        vol.Optional(ATTR_NUMBER, default=5): cv.positive_int
+        vol.Optional(ATTR_NUMBER, default=0): cv.positive_int
     }
 )
 SERVICE_LIST = vol.Schema({
@@ -49,7 +49,9 @@ def setup(hass, config):
 
         entity_id = service.data[ATTR_ENTITY_ID]
         service_data = {}
-        clear_queue(entity_id)
+        if str(entity_id).find("mass") == -1:
+            clear_queue(entity_id)
+        service_play = {'entity_id': entity_id, 'command': 'play'}
         if service.service == SERVICE_PLAY_LIST:
             list_id = service.data.get(ATTR_LIST_ID)
             url = service.data.get(ATTR_URL)
@@ -59,11 +61,20 @@ def setup(hass, config):
             else:
                 id = getListId(url)[0]
             list_playlist = get_id_in_playlist(id)
-            service_data = {'entity_id': entity_id, 'uri': return_url_from_id(list_playlist[0]), 'command': 'play_media'}
-            hass.services.call('mass', 'queue_command', service_data)
-            for ids in list_playlist[1:]:
-                service_data = {'entity_id': entity_id, 'uri': return_url_from_id(ids), 'command': 'play_media', 'mode': 'play_media_play_add'}
+            if str(entity_id).find("mass") != -1:
+                service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(list_playlist[0]), 'media_content_type': 'music', 'enqueue': 'replace'}
+                hass.services.call('media_player', 'play_media', service_data)
+                for ids in list_playlist[1:]:
+                    service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(ids), 'media_content_type': 'music', 'enqueue': 'add'}
+                    hass.services.call('media_player', 'play_media', service_data)
+                # hass.services.call('mass', 'queue_command', service_play)
+            else:
+                service_data = {'entity_id': entity_id, 'uri': return_url_from_id(list_playlist[0]), 'command': 'play_media', 'enqueue_mode': 'play'}
                 hass.services.call('mass', 'queue_command', service_data)
+                for ids in list_playlist[1:]:
+                    service_data = {'entity_id': entity_id, 'uri': return_url_from_id(ids), 'command': 'play_media', 'enqueue_mode': 'add'}
+                    hass.services.call('mass', 'queue_command', service_data)
+                hass.services.call('mass', 'queue_command', service_play)
         elif service.service == SERVICE_PLAY_SONG:
             song_id = service.data.get(ATTR_SONG_ID)
             url = service.data.get(ATTR_URL)
@@ -79,19 +90,41 @@ def setup(hass, config):
                 id = return_id_from_name(name)
             song_url = return_url_from_id(id)
             if (repeat == True):
-                service_data = {'entity_id': entity_id, 'uri': song_url, 'command': 'play_media'}
-                hass.services.call('mass', 'queue_command', service_data)
-                for i in range(0,number):
-                    service_data = {'entity_id': entity_id, 'uri': song_url, 'command': 'play_media', 'mode': 'play_media_play_add'}
+                if str(entity_id).find("mass") != -1:
+                    service_data = {'entity_id': entity_id, 'media_content_id': song_url, 'media_content_type': 'music', 'enqueue': 'replace'}
+                    hass.services.call('media_player', 'play_media', service_data)
+                    if number != 0:
+                        for i in range(0,number):
+                            service_data = {'entity_id': entity_id, 'media_content_id': song_url, 'media_content_type': 'music', 'enqueue': 'add'}
+                            hass.services.call('media_player', 'play_media', service_data)
+                    # hass.services.call('mass', 'queue_command', service_play)
+                else:
+                    service_data = {'entity_id': entity_id, 'uri': song_url, 'command': 'play_media', 'enqueue_mode': 'play'}
                     hass.services.call('mass', 'queue_command', service_data)
-            else: 
-                list_id_the_same = return_the_same_id(id, number)
-                # service data for 'CALL SERVICE' in Home Assistant
-                service_data = {'entity_id': entity_id, 'uri': song_url, 'command': 'play_media'}
-                hass.services.call('mass', 'queue_command', service_data)
-                for ids in list_id_the_same:
-                    service_data = {'entity_id': entity_id, 'uri': return_url_from_id(ids), 'command': 'play_media', 'mode': 'play_media_play_add'}
+                    for i in range(0,number):
+                        service_data = {'entity_id': entity_id, 'uri': song_url, 'command': 'play_media', 'enqueue_mode': 'add'}
+                        hass.services.call('mass', 'queue_command', service_data)
+                    hass.services.call('mass', 'queue_command', service_play)
+            else:
+                if str(entity_id).find("mass") != -1:
+                    # service data for 'CALL SERVICE' in Home Assistant
+                    service_data = {'entity_id': entity_id, 'media_content_id': song_url, 'media_content_type': 'music', 'enqueue': 'replace'}
+                    hass.services.call('media_player', 'play_media', service_data)
+                    if number != 0:
+                        list_id_the_same = return_the_same_id(id, number)
+                        for ids in list_id_the_same:
+                            service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(ids), 'media_content_type': 'music', 'enqueue': 'add'}
+                            hass.services.call('media_player', 'play_media', service_data)
+                    # hass.services.call('mass', 'queue_command', service_play)
+                else:
+                    list_id_the_same = return_the_same_id(id, number)
+                    # service data for 'CALL SERVICE' in Home Assistant
+                    service_data = {'entity_id': entity_id, 'uri': song_url, 'command': 'play_media', 'enqueue_mode': 'play'}
                     hass.services.call('mass', 'queue_command', service_data)
+                    for ids in list_id_the_same:
+                        service_data = {'entity_id': entity_id, 'uri': return_url_from_id(ids), 'command': 'play_media', 'enqueue_mode': 'add'}
+                        hass.services.call('mass', 'queue_command', service_data)
+                    hass.services.call('mass', 'queue_command', service_play)
     hass.services.register(DOMAIN, SERVICE_PLAY_SONG, tts_handler, schema=SERVICE_SONG)
     hass.services.register(DOMAIN, SERVICE_PLAY_LIST, tts_handler, schema=SERVICE_LIST)
     return True
