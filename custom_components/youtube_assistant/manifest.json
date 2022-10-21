@@ -1,0 +1,12 @@
+{
+  "domain": "youtube_assistant",
+  "name": "Youtube Assistant",
+  "version": "1.0.0",
+  "documentation": "https://github.com/TheEnd98/youtube_assistant",
+  "issue_tracker": "https://github.com/TheEnd98/youtube_assistant/issues",
+  "requirements": [],
+  "codeowners": ["@TheEnd98"],
+  "dependencies": [],
+  "iot_class": "cloud_polling",
+  "loggers": ["youtube_assistant"]
+}
