@@ -49,7 +49,7 @@ def setup(hass, config):
 
         entity_id = service.data[ATTR_ENTITY_ID]
         service_data = {}
-        if str(entity_id).find("mass") == -1:
+        if str(entity_id).find("mass") != -1:
             clear_queue(entity_id)
         service_play = {'entity_id': entity_id, 'command': 'play'}
         if service.service == SERVICE_PLAY_LIST:
@@ -61,7 +61,7 @@ def setup(hass, config):
             else:
                 id = getListId(url)[0]
             list_playlist = get_id_in_playlist(id)
-            if str(entity_id).find("mass") != -1:
+            if str(entity_id).find("mass") == -1:
                 service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(list_playlist[0]), 'media_content_type': 'music', 'enqueue': 'replace'}
                 hass.services.call('media_player', 'play_media', service_data)
                 for ids in list_playlist[1:]:
@@ -90,7 +90,7 @@ def setup(hass, config):
                 id = return_id_from_name(name)
             song_url = return_url_from_id(id)
             if (repeat == True):
-                if str(entity_id).find("mass") != -1:
+                if str(entity_id).find("mass") == -1:
                     service_data = {'entity_id': entity_id, 'media_content_id': song_url, 'media_content_type': 'music', 'enqueue': 'replace'}
                     hass.services.call('media_player', 'play_media', service_data)
                     if number != 0:
@@ -106,7 +106,7 @@ def setup(hass, config):
                         hass.services.call('mass', 'queue_command', service_data)
                     hass.services.call('mass', 'queue_command', service_play)
             else:
-                if str(entity_id).find("mass") != -1:
+                if str(entity_id).find("mass") == -1:
                     # service data for 'CALL SERVICE' in Home Assistant
                     service_data = {'entity_id': entity_id, 'media_content_id': song_url, 'media_content_type': 'music', 'enqueue': 'replace'}
                     hass.services.call('media_player', 'play_media', service_data)
