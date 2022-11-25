@@ -23,7 +23,7 @@ if [ $1 ]; then
     fi
     ## Restart homeassistant
     echo "Restart homeassistant"
-    docker restart homeassistant
+    ha core restart
     echo "Restart homeassistant success"
 else
     echo "./youtube_assistant.sh 2022.8.5 or 2022.7.4"
