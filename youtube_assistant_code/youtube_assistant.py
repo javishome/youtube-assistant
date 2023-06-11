@@ -3,83 +3,22 @@ import requests
 import random
 from urllib.parse import parse_qs, urlparse
 def return_id_from_name(name):
-    url = "https://www.youtube.com/youtubei/v1/search?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
-    payload = json.dumps({   
-        "context": {
-            "client": {
-                "hl": "vi",
-                "gl": "VN",
-                "deviceMake": "Apple",
-                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_5) AppleWebKit/544.35 (KHTML, like Gecko) Chrome/84.5.4003.207 Safari/539.31,gzip(gfe)",
-                "clientName": 1,
-                "clientVersion": "2.20220411.09.00",
-                "osName": "Macintosh",
-                "osVersion": "10_5_5",
-                "platform": "DESKTOP",
-                "configInfo": {
-                    "appInstallData": "CL3c2pIGELfLrQUQmOqtBRDUg64FEPCCrgUQjdz9EhDYvq0FEJH4_BI%3D"
-                },
-                "screenDensityFloat": 2,
-                "browserName": "Chrome",
-                "browserVersion": "84.5.4003.207",
-                "mainAppWebInfo": {
-                    "webDisplayMode": "WEB_DISPLAY_MODE_BROWSER",
-                    "graftUrl": "/results?search_query=s%C3%B3ng+gi%C3%B3"
-                },
-                "connectionType": "CONN_CELLULAR_4G"
-            },
-            "request": {
-                "useSsl": True,
-                "internalExperimentFlags": [],
-                "consistencyTokenJars": []
-            },
-            "adSignalsInfo": {
-                "consentBumpParams": {
-                    "consentHostnameOverride": "https://www.youtube.com",
-                    "urlOverride": ""
-                }
-            },
-            "user": {
-                "lockedSafetyMode": False
-            },
-            "clickTracking": {
-                "clickTrackingParams": "CJwBELsvGAIiEwjHlr2k8pD3AhWDS_UFHbZaBYE="
-            }
-        },
-        "query": name
-    })
-    headers = {
-        'Content-Type': 'application/json',
-        'Cookie': 'GPS=1; VISITOR_INFO1_LIVE=vUmkdIJ9Ivg; YSC=1Uj5v_ZJfRA'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    result = json.loads(response.text)["contents"]["twoColumnSearchResultsRenderer"]["primaryContents"][
-        "sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"][0]["videoRenderer"]["videoId"]
+    url = "https://push.javisco.com/api/search-song?name=" + name
+    payload = {}
+    headers = {}    
+    response = requests.request("GET", url, headers=headers, data=payload)
+    result = json.loads(response.text)[0]["videoId"]
     return result
-def return_url_from_id(result):
-    url = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+def return_url_from_id(id):
+    url = "https://push.javisco.com/api/youtube-parse?id=" + id
 
-    payload = json.dumps({
-        "context": {
-            "client": {
-                "hl": "vi-VN",
-                "clientName": "ANDROID",
-                "gl": "VN",
-                "clientVersion": "16.29.38"
-            },
-            "user": {
-                "lockedSafetyMode": False
-            }
-        },
-        "videoId": result
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
+    payload = {}
+    headers = {}
 
-    result = json.loads(response.text)["streamingData"]["formats"][0]["url"]
+    response = requests.request("GET", url, headers=headers, data=payload)
+    result = json.loads(response.text)["url"]
     return result
+    
 def getVideoId(url):
     if (url.find('watch?v=') != -1):
         return parse_qs(urlparse(url).query).get("v")
@@ -88,34 +27,12 @@ def getVideoId(url):
         id = url[urstart_id_idex:]
         return id
     return ""
+
 def getListId(url):
     if (url.find('watch?v=') != -1):
         list = parse_qs(urlparse(url).query).get("list")
         return list
     return ""
-def return_url_from_id(id):
-    url = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
-    payload = json.dumps({
-        "context": {
-            "client": {
-                "hl": "vi-VN",
-                "clientName": "ANDROID",
-                "gl": "VN",
-                "clientVersion": "16.29.38"
-            },
-            "user": {
-                "lockedSafetyMode": False
-            }
-        },
-        "videoId": id
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    result = json.loads(response.text)["streamingData"]["formats"][0]["url"]
-    return result
 def return_url_from_url(url):
     id = getVideoId(url)
     return return_url_from_id(id)   
