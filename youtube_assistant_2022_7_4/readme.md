@@ -4,7 +4,7 @@
 
 ```sh
 youtube_assistant:
-media_extractor:
+# media_extractor:
 ```   
 ### Khai báo gọi dịch vụ như sau:
 #### _Phát bài hát dựa theo tên:_
