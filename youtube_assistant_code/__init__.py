@@ -9,7 +9,8 @@ from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.helpers import config_validation as cv, service
 import voluptuous as vol
 from .youtube_assistant import *
-
+import logging
+_LOGGER = logging.getLogger(__name__)
 # Declare variables
 DOMAIN = 'youtube_assistant'
 
@@ -54,6 +55,9 @@ def setup(hass, config):
         service_play = {'entity_id': entity_id, 'command': 'play'}
         if service.service == SERVICE_PLAY_LIST:
             list_id = service.data.get(ATTR_LIST_ID)
+            _LOGGER.info("-"*20)
+            _LOGGER.info("list_id: %s", list_id)
+            _LOGGER.info("entity_id: %s", entity_id)
             url = service.data.get(ATTR_URL)
             id = ""
             if (list_id != ""):
@@ -62,6 +66,7 @@ def setup(hass, config):
                 id = getListId(url)[0]
             list_playlist = get_id_in_playlist(id)
             if str(entity_id).find("mass") == -1:
+                _LOGGER.info("mass ==-1")
                 service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(list_playlist[0]), 'media_content_type': 'music', 'enqueue': 'replace'}
                 hass.services.call('media_player', 'play_media', service_data)
                 for ids in list_playlist[1:]:
@@ -69,6 +74,7 @@ def setup(hass, config):
                     hass.services.call('media_player', 'play_media', service_data)
                 # hass.services.call('mass', 'queue_command', service_play)
             else:
+                _LOGGER.info("mass !=-1")
                 service_data = {'entity_id': entity_id, 'uri': return_url_from_id(list_playlist[0]), 'command': 'play_media', 'enqueue_mode': 'play'}
                 hass.services.call('mass', 'queue_command', service_data)
                 for ids in list_playlist[1:]:
