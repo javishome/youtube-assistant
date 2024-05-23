@@ -82,7 +82,7 @@ def play_playlist(hass, entity_id, list_playlist,stop):
             global ID_SONG
             ID_SONG = song_id
             yt = YouTube(return_url_from_id(song_id))
-            service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(song_id), 'media_content_type': 'music',"extra": {"thumb": yt.thumbnail_url,"title": yt.title}}
+            service_data = {'entity_id': entity_id, 'media_content_id': return_url_from_id(song_id), 'media_content_type': 'music',"extra": {"thumb": yt.thumbnail_url,"title": yt.title,"enqueue":"true"}}
             hass.services.call('media_player', 'play_media', service_data)
             #Đợi một khoảng thời gian ngắn trước check state
             sleep(3)
