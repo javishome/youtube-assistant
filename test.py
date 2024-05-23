@@ -105,7 +105,8 @@ class PlayerMedia:
                 'media_content_type': 'music',
                 "extra": {
                     "thumb": yt.thumbnail_url,
-                    "title": yt.title
+                    "title": yt.title,
+                    "enqueue":"true"
                 }
             }
             self.hass.services.call('media_player', 'play_media', service_data)
@@ -121,6 +122,7 @@ class PlayerMedia:
         if current_index < len(list_playlist) - 1:
             current_index += 1
         self.stop = True
+        sleep(1)
         self.stop = False
         self.play_playlist(entity_id, list_playlist[current_index:])
 
@@ -129,6 +131,7 @@ class PlayerMedia:
         if current_index > 0:
             current_index -= 1
         self.stop = True
+        sleep(1)
         self.stop = False
         self.play_playlist(entity_id, list_playlist[current_index:])
 
