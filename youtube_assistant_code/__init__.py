@@ -47,22 +47,10 @@ SERVICE_LIST = vol.Schema({
 
 SERVICE_NEXT = vol.Schema({
     vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
-    vol.Optional(ATTR_LIST_ID, default=""): cv.string,
-    vol.Optional(ATTR_URL, default=""): cv.string,
-    vol.Optional(ATTR_SONG_ID, default=""): cv.string,
-    vol.Optional(ATTR_NAME, default=""): cv.string,
-    vol.Optional(ATTR_REPEAT, default=False): cv.boolean,
-    vol.Optional(ATTR_NUMBER, default=0): cv.positive_int
 })
 
 SERVICE_PREVIOUS = vol.Schema({
     vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
-    vol.Optional(ATTR_LIST_ID, default=""): cv.string,
-    vol.Optional(ATTR_URL, default=""): cv.string,
-    vol.Optional(ATTR_SONG_ID, default=""): cv.string,
-    vol.Optional(ATTR_NAME, default=""): cv.string,
-    vol.Optional(ATTR_REPEAT, default=False): cv.boolean,
-    vol.Optional(ATTR_NUMBER, default=0): cv.positive_int
 })
 def get_playlist_from_id_url(list_id, url):
     id=''
@@ -169,21 +157,11 @@ class PlayerMedia:
                 self.handle_next_previous(service, entity, False)
 
     def handle_next_previous(self, service, entity, is_next):
-        list_id = service.data.get(ATTR_LIST_ID)
-        song_id = service.data.get(ATTR_SONG_ID)
-        url = service.data.get(ATTR_URL)
-        number = service.data.get(ATTR_NUMBER)
-        name = service.data.get(ATTR_NAME)
-        repeat = service.data.get(ATTR_REPEAT)
-        id = ''
-        if name:
-            song_url, id = get_playlist_from_songid_name(song_id, url, name)
-        if list_id == self.old_id_playlist or id == self.old_id_playlist:
-            list_playlist = self.old_playlist
-            if is_next:
-                self.play_next(entity, list_playlist)
-            else:
-                self.play_previous(entity, list_playlist)
+        list_playlist = self.old_playlist
+        if is_next:
+            self.play_next(entity, list_playlist)
+        else:
+            self.play_previous(entity, list_playlist)
 
     def register_services(self):
         self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG, self.tts_handler, schema=SERVICE_SONG)
