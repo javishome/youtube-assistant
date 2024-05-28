@@ -5,7 +5,7 @@
   "documentation": "https://github.com/dungnguyen",
   "dependencies": [],
 "codeowners": ["Dũng Nguyễn: javisco"],
-  "requirements": [],
+  "requirements": ["pytube==15.0.0"],
   "iot_class": "cloud_polling",
   "updater": {
     "version": "1.0",
