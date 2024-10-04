@@ -1,2 +1,76 @@
-update:
-  description: Custom Youtube Assistant for Home Asisstant.
+play_list:
+  name: Play playlist
+  description: Play playlist in Youtube
+  target:
+    entity:
+      domain: media_player
+  fields:
+    # entity_id:
+    #   description: Media player entity
+    #   example: media_player.living_room
+    #   required: true
+
+    list_id:
+      description: Id Playlist
+      example: PLfp4okjzV8u4EiIJOczMm-M5wl5mTasRN
+      required: false
+      default: PLfp4okjzV8u4EiIJOczMm-M5wl5mTasRN
+      selector:
+        text:
+    url:
+      description: Link Playlist
+      example: https://www.youtube.com/watch?v=OtxgU38FnfA&list=PLfp4okjzV8u4EiIJOczMm-M5wl5mTasRN
+      required: false
+      default: PLfp4okjzV8u4EiIJOczMm-M5wl5mTasRN
+      selector:
+        text:
+
+
+play_song:
+  name: Play song
+  description: Play song in Youtube
+  target:
+    entity:
+      domain: media_player
+  fields:
+    # entity_id:
+    #   description: Media player entity
+    #   example: media_player.living_room
+    #   required: true
+    #   target:
+    #     entity:
+    #       domain: media_player
+    song_id:
+      description: Id song in youtube
+      example: k23DIQAE1Ug
+      required: false
+      selector:
+        text:
+    url:
+      description: Link song in youtube
+      example: https://www.youtube.com/watch?v=k23DIQAE1Ug
+      required: false
+      selector:
+        text:
+    name:
+      description: Name of song
+      example: Nhà thông minh Javis
+      required: false
+      selector:
+        text:
+    number:
+      description: Number of song to play
+      required: false
+      example: 5
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 10
+    repeat:
+      description: Repeat one song
+      required: false
+      default: false
+      selector:
+        boolean:
+          
