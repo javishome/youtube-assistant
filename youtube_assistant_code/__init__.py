@@ -9,7 +9,7 @@ import voluptuous as vol
 from email.policy import default
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.helpers import config_validation as cv, service
-from pytube import YouTube
+from pytubefix import YouTube
 
 from .youtube_assistant import *
 import logging
@@ -61,7 +61,7 @@ def get_playlist_from_id_url(list_id, url):
     list_playlist = get_id_in_playlist(id)
     return list_playlist
 
-def get_playlist_from_songid_name(song_id,url,name):
+def get_playlist_from_songid_name(song_id,url,name, entity):
     id = ""
     if (song_id != ""):
         id = song_id
@@ -69,7 +69,7 @@ def get_playlist_from_songid_name(song_id,url,name):
         id = getVideoId(url)[0]
     else: 
         id = return_id_from_name(name)
-    song_url = return_url_from_id(id)  
+    song_url = return_url_from_id(id, entity)  
     return song_url,id 
 
 class PlayerMedia:
@@ -84,12 +84,11 @@ class PlayerMedia:
         for song_id in list_playlist:
             if self.stop:
                 break
-            _LOGGER.info("Playing song with ID: %s", song_id)
             self.id_song = song_id
-            yt = YouTube(return_url_from_id(song_id))
+            yt = YouTube(return_url_from_id_javis(song_id))
             service_data = {
                 'entity_id': entity_id,
-                'media_content_id': return_url_from_id(song_id),
+                'media_content_id': return_url_from_id(song_id, entity_id),
                 'media_content_type': 'music',
                 "extra": {
                     "thumb": yt.thumbnail_url,
@@ -139,7 +138,7 @@ class PlayerMedia:
                 number = service.data.get(ATTR_NUMBER)
                 name = service.data.get(ATTR_NAME)
                 repeat = service.data.get(ATTR_REPEAT)
-                song_url, id = get_playlist_from_songid_name(song_id, url, name)
+                song_url, id = get_playlist_from_songid_name(song_id, url, name, entity)
                 self.old_id_playlist = id
                 if repeat:
                     if number != 0:
@@ -148,7 +147,7 @@ class PlayerMedia:
                         self.play_playlist(entity, list_playlist)
                 else:
                     if number != 0:
-                        list_id_the_same = self.return_the_same_id(id, number)
+                        list_id_the_same = return_the_same_id(id, number)
                         self.old_playlist = list_id_the_same
                         self.play_playlist(entity, list_id_the_same)
             elif service.service == SERVICE_PLAY_NEXT:
