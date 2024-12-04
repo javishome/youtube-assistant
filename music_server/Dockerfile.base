@@ -1,0 +1,24 @@
+
+FROM python:3.9-alpine3.20
+RUN set -x \
+    && apk add --no-cache \
+        ca-certificates \
+        jemalloc \
+        curl \
+        git \
+        wget \
+        tzdata \
+        sox \
+        cifs-utils \
+    # install ffmpeg from community repo
+    && apk add --no-cache ffmpeg --repository=https://dl-cdn.alpinelinux.org/alpine/v3.20/community 
+
+WORKDIR /app
+
+# Configure runtime environmental variables
+ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
+
+COPY . /app
+RUN pip3 install -r requirements_all.txt
+
+

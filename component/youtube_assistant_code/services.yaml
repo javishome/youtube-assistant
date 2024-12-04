@@ -24,6 +24,15 @@ play_list:
       default: PLfp4okjzV8u4EiIJOczMm-M5wl5mTasRN
       selector:
         text:
+    version:
+      description: Version of playlist api
+      example: 1
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 2
 
 
 play_song:
@@ -73,4 +82,26 @@ play_song:
       default: false
       selector:
         boolean:
-          
+    version:
+      description: Version of playlist api
+      example: 1
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 2
+
+play_next:
+  name: Play next
+  description: Play next song in Youtube
+  target:
+    entity:
+      domain: media_player
+      
+play_previous:
+  name: Play previous
+  description: Play previous song in Youtube
+  target:
+    entity:
+      domain: media_player
