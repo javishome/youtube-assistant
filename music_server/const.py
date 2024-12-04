@@ -1,0 +1,16 @@
+# ROOT_DIR_PROD = '/usr/share/hassio/homeassistant/'
+ROOT_DIR_PROD = '/config/'
+# TOKEN_DEV = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIxZGQwYjNlNWE2ZTc0ZTY5YTM5NzdlZDAxMWE2Mjk5OCIsImlhdCI6MTU5NTE4MDYyOCwiZXhwIjoxOTEwNTQwNjI4fQ.9IytiXHV98pS4x5nxhH7z1QAq91ZXzBQaeJsZ8U2ZAQ'
+TOKEN_DEV = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjODkyZmE0NDhhNDI0NzA5YjVkZGM1YTY2NWY0ZjBhOCIsImlhdCI6MTY4MDE1NjAyNCwiZXhwIjoxOTk1NTE2MDI0fQ.tvVpyMMGOIJTnULdWzIDobN2sn9RvJnrLC2fggo-5UU'
+# HOST_DEV = "http://192.168.1.15:8123"
+HOST_DEV = "http://192.168.1.32:8123"
+# SERVER_STREAM_DEV = "https://improved-liger-tops.ngrok-free.app"
+# SERVER_STREAM_DEV = "http://192.168.1.57:2024"
+SERVER_STREAM_DEV = "http://192.168.1.32:2024"
+# FFMPEG_PATH = r"C:\ffmpeg\ffmpeg.exe" 
+FFMPEG_PATH = r"ffmpeg"
+
+ENABLE_LOG = False
+# MODE = 'dev'
+
+MODE = 'prod'
