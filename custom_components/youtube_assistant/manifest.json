@@ -1,12 +1,19 @@
 {
   "domain": "youtube_assistant",
-  "name": "Youtube Assistant",
-  "version": "1.0.0",
-  "documentation": "https://github.com/TheEnd98/youtube_assistant",
-  "issue_tracker": "https://github.com/TheEnd98/youtube_assistant/issues",
-  "requirements": [],
-  "codeowners": ["@TheEnd98"],
+  "name": "YOUTUBE ASSISTANT",
+  "version": "1.0",
+  "documentation": "https://github.com/dungnguyen",
   "dependencies": [],
+"codeowners": ["Dũng Nguyễn: javisco"],
+  "requirements": ["pytube==15.0.0"],
   "iot_class": "cloud_polling",
-  "loggers": ["youtube_assistant"]
+  "updater": {
+    "version": "1.0",
+    "releaseNotes": "-- Add manifest file",
+    "files": [
+      "__init__.py",
+      "manifest.json",
+      "services.yaml"
+    ]
+  }
 }
