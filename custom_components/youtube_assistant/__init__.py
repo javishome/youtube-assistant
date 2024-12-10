@@ -58,7 +58,7 @@ class PlayerMedia:
             if service.service == SERVICE_PLAY_LIST:
                 list_id = service.data.get(ATTR_LIST_ID)
                 url = service.data.get(ATTR_URL)
-                api_playlist = "/media/play_list"
+                api_playlist = "/media/play_playlist"
                 data = {
                     "media_id": entity,
                     "list_id": list_id,
@@ -70,7 +70,7 @@ class PlayerMedia:
             elif service.service == SERVICE_PLAY_LIST_STREAM:
                 list_id = service.data.get(ATTR_LIST_ID)
                 url = service.data.get(ATTR_URL)
-                api_playlist = "/media/play_list"
+                api_playlist = "/media/play_playlist"
                 data = {
                     "media_id": entity,
                     "list_id": list_id,
@@ -119,18 +119,20 @@ class PlayerMedia:
                 data = {
                     "media_id": entity
                 }
-                requests.post(self.url + "/next", json=data)
+                requests.post(self.url + "/media/next", json=data)
 
             elif service.service == SERVICE_PLAY_PREVIOUS:
                 _LOGGER.info("Previous")
                 data = {
                     "media_id": entity
                 }
-                requests.post(self.url + "/previous", json=data)
+                requests.post(self.url + "/media/previous", json=data)
 
     def register_services(self):
         self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG, self.tts_handler, schema=SERVICE_SONG)
+        self.hass.services.register(DOMAIN, SERVICE_PLAY_MEDIA, self.tts_handler, schema=SERVICE_SONG)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST, self.tts_handler, schema=SERVICE_LIST)
+        self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST_STREAM, self.tts_handler, schema=SERVICE_LIST)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_NEXT, self.tts_handler, schema=SERVICE_NEXT)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_PREVIOUS, self.tts_handler, schema=SERVICE_PREVIOUS)    
 
