@@ -10,7 +10,7 @@ SERVER_STREAM_DEV = "http://192.168.1.32:2024"
 # FFMPEG_PATH = r"C:\ffmpeg\ffmpeg.exe" 
 FFMPEG_PATH = r"ffmpeg"
 
-ENABLE_LOG = False
+ENABLE_LOG = True
 # MODE = 'dev'
 
 MODE = 'prod'

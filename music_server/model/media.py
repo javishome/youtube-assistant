@@ -29,13 +29,18 @@ class Media:
     
     def play_media_in_process(self, current_song_index):
         write_log(str(self.playlist))
+        is_error = False
         for idx, media_content_id in enumerate(self.playlist):
             if idx < current_song_index.value:
                 continue
             current_song_index.value = idx
             write_log(f"change song: to {current_song_index.value}  in media: {self.media_id}")
             # call service
-            duration = call_play(self.media_id, media_content_id)
+            duration = get_duration(media_content_id)
+            if duration == 0:
+                write_log("error: duration is 0" + media_content_id + " in media: " + self.media_id)
+                continue
+            call_play(self.media_id, media_content_id)
             # wait for media to play
             count = 0
             while True:
@@ -46,7 +51,10 @@ class Media:
                 count +=1
                 if count > 60:
                     write_log("error: media not work" + media_content_id + " in media: " + self.media_id)
+                    is_error = True
                     break
+            if is_error:
+                break
             # wait to media end playing
             write_log("duration: " + str(duration) + " in media: " + self.media_id)
             start_time = time.time()

@@ -102,11 +102,15 @@ def call_play(media_id, media_content_id):
     song_id = get_song_id(media_content_id)
     url_youtube = "https://www.youtube.com/watch?v=" + song_id
     yt = YouTube(url_youtube)
-    duration = yt.length
     service_data = get_service_play(media_id, media_content_id, yt.thumbnail_url, yt.title)
     endpoint = '/api/services/media_player/play_media'
     call_service(endpoint, service_data)
-    return duration
+
+def get_duration(media_content_id):
+    song_id = get_song_id(media_content_id)
+    url_youtube = "https://www.youtube.com/watch?v=" + song_id
+    yt = YouTube(url_youtube)
+    return yt.length
 
 def call_service(endpoint, data):
     host = get_local_host()
@@ -176,16 +180,9 @@ def get_service_play(media_id, media_content_id, thumbnail_url, title):
             }
     return service_data
 
-def get_playlist_play(repeat, number, media_id, name, url, song_id, version):
-    list_playlist = []
+def get_playlist_play(media_id, name, url, song_id, version):
     song_url = get_url_from_song_name(song_id, url, name, media_id, version)
-    if repeat:
-        if number != 0:
-            list_playlist = [song_url] * number
-    else:
-        list_id = return_the_same_id(song_id, number)
-        list_playlist  = [return_url_from_id(id, media_id, version) for id in list_id]
-    return list_playlist
+    return [song_url]
 
 def get_playlist_from_id_url(list_id, url, media_id, version):
     id=''

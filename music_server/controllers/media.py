@@ -18,8 +18,6 @@ def play():
     song_id = data.get('song_id')
     url = data.get('url')
     name = data.get('name')
-    repeat = data.get('repeat')
-    number = data.get('number')
     version = int(data.get('version'))
     # step 4: process data
     if mediaControl.processes.get(media_id):
@@ -27,7 +25,7 @@ def play():
     else:
         media = Media(media_id)
         mediaControl.processes[media_id] = media
-    playlist = get_playlist_play(repeat, number, media_id, name, url, song_id, version)
+    playlist = get_playlist_play(media_id, name, url, song_id, version)
     media.play_media(playlist)
     return "Success", 200
 
