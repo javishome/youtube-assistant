@@ -81,6 +81,18 @@ def return_url_from_id_javis(id):
     result = json.loads(response.text)["url"]
     return result
 
+def return_url_from_id_javis_v2(id):
+    url = "https://push.javisco.com/api/v2/youtube-parse?id=" + id
+
+    payload = {}
+    headers = {}
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    result = json.loads(response.text)
+    url = result.get("url")
+    length = int(result.get("length"))
+    return url, length
+
 def get_local_host():
     if MODE == 'dev':
         return HOST_DEV

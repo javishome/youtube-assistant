@@ -18,11 +18,8 @@ def stream_flac(url, media_id, timestamp):
     command = [
         FFMPEG_PATH,
         "-i", url,
-        "-vn",
-        "-acodec", "flac",
-        "-f", "flac",
-        "-buffer_size", "8K",   # Giới hạn bộ đệm
-        "-max_delay", "1000000", # Giảm độ trễ
+        "-f", "mp3",
+        '-ab', '192k',
         "pipe:1"
     ]
 
