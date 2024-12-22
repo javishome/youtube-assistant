@@ -20,17 +20,13 @@ SERVICE_PLAY_PREVIOUS = 'play_previous'
 ATTR_NAME = 'name'
 ATTR_SONG_ID = 'song_id'
 ATTR_URL = 'url'
-ATTR_NUMBER = 'number'
 ATTR_LIST_ID = 'list_id'
-ATTR_REPEAT = 'repeat'
 
 SERVICE_SONG = vol.Schema({
     vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
     vol.Optional(ATTR_SONG_ID, default=""): cv.string,
     vol.Optional(ATTR_URL, default=""): cv.string,
     vol.Optional(ATTR_NAME, default=""): cv.string,
-    vol.Optional(ATTR_REPEAT, default=False): cv.boolean,
-    vol.Optional(ATTR_NUMBER, default=0): cv.positive_int,
 })
 
 SERVICE_LIST = vol.Schema({
@@ -82,34 +78,26 @@ class PlayerMedia:
             elif service.service == SERVICE_PLAY_SONG:
                 song_id = service.data.get(ATTR_SONG_ID)
                 url = service.data.get(ATTR_URL)
-                number = service.data.get(ATTR_NUMBER)
                 name = service.data.get(ATTR_NAME)
-                repeat = service.data.get(ATTR_REPEAT)
                 api_play = "/media/play"
                 data = {
                     "media_id": entity,
                     "song_id": song_id,
                     "url": url,
-                    "number": number,
                     "name": name,
-                    "repeat": repeat,
                     "version": "1"
                 }
                 requests.post(self.url + api_play, json=data)
             elif service.service == SERVICE_PLAY_MEDIA:
                 song_id = service.data.get(ATTR_SONG_ID)
                 url = service.data.get(ATTR_URL)
-                number = service.data.get(ATTR_NUMBER)
                 name = service.data.get(ATTR_NAME)
-                repeat = service.data.get(ATTR_REPEAT)
                 api_play = "/media/play"
                 data = {
                     "media_id": entity,
                     "song_id": song_id,
                     "url": url,
-                    "number": number,
                     "name": name,
-                    "repeat": repeat,
                     "version": "2"
                 }
                 requests.post(self.url + api_play, json=data)

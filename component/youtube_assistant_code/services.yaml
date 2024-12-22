@@ -86,21 +86,6 @@ play_song:
       required: false
       selector:
         text:
-    number:
-      description: Number of song to play
-      required: false
-      example: 5
-      default: 5
-      selector:
-        number:
-          min: 1
-          max: 10
-    repeat:
-      description: Repeat one song
-      required: false
-      default: false
-      selector:
-        boolean:
 
 play_media:
   name: Play song stream
@@ -134,21 +119,6 @@ play_media:
       required: false
       selector:
         text:
-    number:
-      description: Number of song to play
-      required: false
-      example: 5
-      default: 5
-      selector:
-        number:
-          min: 1
-          max: 10
-    repeat:
-      description: Repeat one song
-      required: false
-      default: false
-      selector:
-        boolean:
 
 
 play_next:
