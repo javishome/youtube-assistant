@@ -14,6 +14,6 @@ YTB_PATH = r"yt-dlp"
 YTM_DOMAIN = "https://www.youtube.com"
 ENABLE_LOG = True
 
-MODE = 'dev'
+# MODE = 'dev'
 
-# MODE = 'prod'
+MODE = 'prod'
