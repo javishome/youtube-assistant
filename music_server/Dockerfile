@@ -5,6 +5,7 @@ WORKDIR /app
 COPY . /app
 
 RUN pip3 install -r requirements_all.txt
+RUN pip3 install --upgrade yt-dlp
 
 EXPOSE 2024
 

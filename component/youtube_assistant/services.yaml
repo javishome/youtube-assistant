@@ -1,0 +1,128 @@
+play_list:
+  name: Play playlist
+  description: Play playlist in Youtube
+  target:
+    entity:
+      domain: media_player
+  fields:
+    list_id:
+      description: Id Playlist
+      example: RDDgI_Lgv2To0
+      required: True
+      default: RDDgI_Lgv2To0
+      selector:
+        text:
+
+play_list_stream:
+  name: Play playlist stream
+  description: Play playlist stream in Youtube
+  target:
+    entity:
+      domain: media_player
+  fields:
+    list_id:
+      description: Id Playlist
+      example: RDDgI_Lgv2To0
+      required: True
+      default: RDDgI_Lgv2To0
+      selector:
+        text:
+
+play_song:
+  name: Play song
+  description: Play song in Youtube
+  target:
+    entity:
+      domain: media_player
+  fields:
+    song_id:
+      description: Id song in youtube
+      example: k23DIQAE1Ug
+      required: True
+      selector:
+        text:
+    name:
+      description: Name of song
+      example: Nhà thông minh Javis
+      required: False
+      selector:
+        text:
+
+play_media:
+  name: Play Media
+  description: Play song in Youtube stream
+  target:
+    entity:
+      domain: media_player
+  fields:
+    song_id:
+      description: Id song in youtube
+      example: k23DIQAE1Ug
+      required: True
+      selector:
+        text:
+    name:
+      description: Name of song
+      example: Nhà thông minh Javis
+      required: False
+      selector:
+        text:
+
+play_song_title:
+  name: Play song by title
+  description: Play song by title
+  target:
+    entity:
+      domain: media_player
+  fields:
+    song_title:
+      description: Song's title in youtube
+      example: Bài hát Sơn tùng
+      required: True
+      selector:
+        text:
+    number:
+      description: Number of song in list
+      example: 1
+      required: False
+      selector:
+        number:
+          min: 1
+          max: 10
+
+play_song_title_stream:
+  name: Play song by title (stream)
+  description: Play song by title (stream)
+  target:
+    entity:
+      domain: media_player
+  fields:
+    song_title:
+      description: Song's title in youtube
+      example: Bài hát Sơn tùng
+      required: True
+      selector:
+        text:
+    number:
+      description: Number of song in list
+      example: 1
+      required: False
+      selector:
+        number:
+          min: 1
+          max: 10
+
+
+play_next:
+  name: Play next
+  description: Play next song in Youtube
+  target:
+    entity:
+      domain: media_player
+      
+play_previous:
+  name: Play previous
+  description: Play previous song in Youtube
+  target:
+    entity:
+      domain: media_player

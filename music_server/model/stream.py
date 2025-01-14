@@ -25,7 +25,7 @@ def stream_flac(url, media_id, timestamp):
 
     # Tạo tiến trình ffmpeg mới
     audio.processes[media_id] = {
-        "process": subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE),
+        "process": subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL),
         "timestamp": timestamp
     }        
     try:
@@ -42,4 +42,3 @@ def stream_flac(url, media_id, timestamp):
         if audio.processes.get(media_id):
             audio.processes[media_id]["process"].kill()
             audio.processes[media_id]["process"].wait()
-            # del audio.processes[media_id]  # Giải phóng tham chiếu tới tiến trình cũ

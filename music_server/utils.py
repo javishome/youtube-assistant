@@ -5,10 +5,12 @@ import socket
 import time
 import os
 import yaml
-from pytubefix import YouTube
-from const import MODE, TOKEN_DEV, HOST_DEV, ROOT_DIR_PROD, SERVER_STREAM_DEV, ENABLE_LOG
+from const import MODE, TOKEN_DEV, HOST_DEV, ROOT_DIR_PROD, SERVER_STREAM_DEV, ENABLE_LOG, YTM_DOMAIN
 import re
 from logging import getLogger
+import json
+from pytubefix import YouTube
+import yt_dlp
 logger = getLogger(__name__)
 
 
@@ -31,24 +33,25 @@ def get_local_ip():
         s.close()
     return local_ip
 
-def get_url_from_song_name(song_id,url,name, entity, version):
-    id = ""
-    if (song_id != ""):
-        id = song_id
-    elif (url != ""):
-        id = getVideoId(url)[0]
-    else: 
-        id = return_id_from_name(name)
-    song_url = return_url_from_id(id, entity, version)  
-    return song_url 
+def get_song_id(song_id, url):
+    if song_id != "":
+        return song_id
+    elif url != "":
+        return getVideoId(url)[0]
+    return ""
 
-def return_id_from_name(name):
+def return_list_song_id_from_name(name, number):
     url = "https://push.javisco.com/api/search-song?name=" + name
     payload = {}
     headers = {}    
     response = requests.request("GET", url, headers=headers, data=payload)
-    result = json.loads(response.text)[0]["videoId"]
-    return result
+    list_info = json.loads(response.text)
+    if number < len(list_info):
+        list_info = list_info[:number]
+    list_song_id = []
+    for i in list_info:
+        list_song_id.append(i["videoId"])
+    return list_song_id
 
 def getVideoId(url):
     if (url.find('watch?v=') != -1):
@@ -59,58 +62,65 @@ def getVideoId(url):
         return id
     return ""
 
-def return_url_from_id(id, entity, version):
-    timestamp = str(int(time.time()))
-    entity = entity.replace("media_player.", "")
+def get_name_of_song(song_id, name):
+    if name != "":
+        return name
+    url_yt = "https://www.youtube.com/watch?v=" + song_id
+    yt = YouTube(url_yt)
+    return yt.title
+
+def return_song_info_from_id(media_song_id, id, version, name = ""):
+    song_info = {}
+    song_info["name"] = get_name_of_song(id, name)
+    song_info["id"] = id
+    song_info["length"] = get_length_from_id(id)
+    song_info["version"] = version
     if version == 1:
-        url = return_url_from_id_javis(id)
+        song_info["url"] = return_url_from_id_javis(id)
+        return song_info
     else:
         if MODE == 'dev':
-            url = get_server_stream() + '/stream/' + entity + "/" + id +'.flac' + "?ts=" + timestamp
+            song_info["url"] = get_server_stream() + '/stream?media_song_id=' + media_song_id
         else:
-            url = 'http://' + get_local_ip() + ':2024/stream/' + entity + "/" + id +'.flac' + "?ts=" + timestamp
-    return url
+            song_info["url"] = 'http://' + get_local_ip() + ':2024/stream?media_song_id=' + media_song_id 
+    return song_info
+
+def get_length_from_id(id):
+    yt_url = "https://www.youtube.com/watch?v=" + id
+    yt = YouTube(yt_url)
+    return yt.length
 
 def return_url_from_id_javis(id):
     url = "https://push.javisco.com/api/youtube-parse?id=" + id
-
     payload = {}
     headers = {}
-
     response = requests.request("GET", url, headers=headers, data=payload)
     result = json.loads(response.text)["url"]
     return result
 
-def return_url_from_id_javis_v2(id):
-    url = "https://push.javisco.com/api/v2/youtube-parse?id=" + id
-
-    payload = {}
-    headers = {}
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    result = json.loads(response.text)
-    url = result.get("url")
-    length = int(result.get("length"))
-    return url, length
+def return_info_from_id_javis(id):
+    url = return_url_from_id_javis(id)
+    yt_url = "https://www.youtube.com/watch?v=" + id
+    yt = YouTube(yt_url)
+    result = {"url": url, "length": yt.length}
+    return result
 
 def get_local_host():
     if MODE == 'dev':
         return HOST_DEV
     return 'http://' + get_local_ip() + ':8123'
 
-def call_play(media_id, media_content_id):
-    song_id = get_song_id(media_content_id)
-    url_youtube = "https://www.youtube.com/watch?v=" + song_id
-    yt = YouTube(url_youtube)
-    service_data = get_service_play(media_id, media_content_id, yt.thumbnail_url, yt.title)
+def call_play(media_id, media_content_id, name):
+    service_data = get_service_play(media_id, media_content_id, name)
     endpoint = '/api/services/media_player/play_media'
     call_service(endpoint, service_data)
 
-def get_duration(media_content_id):
-    song_id = get_song_id(media_content_id)
-    url_youtube = "https://www.youtube.com/watch?v=" + song_id
-    yt = YouTube(url_youtube)
-    return yt.length
+def call_stop(media_id):
+    service_data = {
+        'entity_id': media_id
+    }
+    endpoint = '/api/services/media_player/media_stop'
+    call_service(endpoint, service_data)
 
 def call_service(endpoint, data):
     host = get_local_host()
@@ -147,7 +157,6 @@ def get_state(entity_id):
         write_log("error: get state")
         return "error"
 
-
 def get_token():
     if MODE == 'dev':
         return TOKEN_DEV
@@ -168,31 +177,40 @@ def yaml2dict(filename):
     except:
         return {}
     
-def get_service_play(media_id, media_content_id, thumbnail_url, title):
+def get_service_play(media_id, media_content_id, title):
     service_data = {
                 'entity_id': media_id,
                 'media_content_id': media_content_id,
                 'media_content_type': 'music',
                 "extra": {
-                    "thumb": thumbnail_url,
                     "title": title
                     }
             }
     return service_data
 
-def get_playlist_play(media_id, name, url, song_id, version):
-    song_url = get_url_from_song_name(song_id, url, name, media_id, version)
-    return [song_url]
+def get_playlist_play(media_id, name, song_id, version):
+    playlist = {}
+    # get song info
+    media_song_id = media_id + "_" + song_id
+    playlist[media_song_id] = return_song_info_from_id(media_song_id,song_id,version, name)  
+    return playlist
 
-def get_playlist_from_id_url(list_id, url, media_id, version):
-    id=''
-    if (list_id != ""):
-        id = list_id
-    else:
-        id = getListId(url)[0]
-    list_id = get_id_in_playlist(id)
-    list_playlist = [return_url_from_id(id, media_id, version) for id in list_id]
-    return list_playlist
+def get_playlist_by_name(media_id, name, number, version):
+    playlist = {}
+    # get song info
+    list_song_id = return_list_song_id_from_name(name, number)
+    for song_id in list_song_id:
+        media_song_id = media_id + "_" + song_id
+        playlist[media_song_id] = return_song_info_from_id(media_song_id,song_id,version, name)  
+    return playlist
+
+def get_playlist_from_id_url(list_id, media_id,  version):
+    playlist = {}
+    list_song_id = get_id_in_playlist(list_id)
+    for song_id in list_song_id:
+        media_song_id = media_id + "_" + song_id
+        playlist[media_song_id] = return_song_info_from_id(media_song_id, song_id, version)
+    return playlist
 
 def getListId(url):
     if (url.find('watch?v=') != -1):
@@ -213,13 +231,40 @@ def get_id_in_playlist(play_list):
         list_playlist.append(lis["snippet"]["resourceId"]["videoId"])
     return list_playlist
 
+import os
+import time
+
+ENABLE_LOG = True  # Set this to False to disable logging
+
 def write_log(msg):
     if not ENABLE_LOG:
         return
+    
+    log_file = "log.log"
+    max_lines = 200
+    remove_lines = 100
+
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    file = open("log.log", "a")
-    file.write(current_time + ": " + msg + "\n")
-    file.close()
+    log_entry = f"{current_time}: {msg}\n"
+    
+    # Write the new log entry
+    with open(log_file, "a", encoding="utf-8") as file:
+        file.write(log_entry)
+
+    # Check and truncate the file if it exceeds the max lines
+    try:
+        with open(log_file, "r+", encoding="utf-8") as file:
+            lines = file.readlines()
+            if len(lines) > max_lines:
+                # Remove the first `remove_lines` lines
+                lines = lines[remove_lines:]
+                # Rewrite the file with the remaining lines
+                file.seek(0)  # Move to the start of the file
+                file.truncate()  # Clear the file
+                file.writelines(lines)  # Write the remaining lines back
+    except Exception as e:
+        print(f"Error while truncating log file: {e}")
+
 
 def get_server_stream():
     if MODE == 'dev':
@@ -248,3 +293,38 @@ def return_the_same_id(id, number):
         if number_list == number:
             break
     return list_id
+
+def read_data_from_json(file):
+    try:
+        with open(file) as f:
+            data = json.load(f)
+            if not data:
+                return {}
+            return data
+    except json.JSONDecodeError:
+        return {}
+
+def write_data_to_json(file, data):
+    with open(file, 'w', encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
+def get_best_stream_url(id):
+    url_ytm = YTM_DOMAIN + "/watch?v=" + id
+    ydl_opts = {
+        "quiet": True,
+        "no_warnings": True,
+        "format": "bestaudio",
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        try:
+            start_time = time.time()
+            info = ydl.extract_info(url_ytm, download=False)
+            print(f"Info extracted in {time.time() - start_time:.2f}s")
+        except yt_dlp.utils.DownloadError as err:
+            print(f"Error extracting info: {err}")
+            return ""
+
+        format_selector = ydl.build_format_selector("m4a/bestaudio")
+        stream_format = next(format_selector({"formats": info["formats"]}), None)
+        video_url = stream_format.get("url") if stream_format else None
+    return video_url

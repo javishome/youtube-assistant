@@ -20,6 +20,14 @@ def play_playlist():
     """
     return media.play_playlist()
 
+#play by name
+@app.route('/media/play_by_name', methods=['POST'])
+def play_by_name():
+    """
+    control media device to play by name
+    """
+    return media.play_by_name()
+
 #play next song
 @app.route('/media/next', methods=['POST'])
 def next():
@@ -36,9 +44,9 @@ def previous():
     """
     return media.previous()
 
-@app.route('/stream/<media_id>/<id>.flac')
-def music(media_id, id):
-    return stream.music(media_id, id)
+@app.route('/stream')
+def music():
+    return stream.music()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=2024)
