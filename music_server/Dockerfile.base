@@ -1,5 +1,5 @@
 
-FROM python:3.14.0a3-alpine3.20
+FROM python:3.12.8-alpine3.21
 RUN set -x \
     && apk add --no-cache \
         ca-certificates \
@@ -18,7 +18,7 @@ WORKDIR /app
 # Configure runtime environmental variables
 ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
 
-COPY . /app
+COPY requirements_all.txt /app
 RUN pip3 install -r requirements_all.txt
 
 

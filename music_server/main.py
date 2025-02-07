@@ -1,5 +1,4 @@
-from flask import Flask, Response,request
-from utils import *
+from flask import Flask
 from controllers import media
 from controllers import stream
 app = Flask(__name__)

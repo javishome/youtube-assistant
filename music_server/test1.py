@@ -51,7 +51,7 @@ def test_play_by_name(media_id, name, number, version):
 media_id_1 = "media_player.loa_da_vung_tran_2"
 media_id_2 = "media_player.da_vung_69"
 media_id_3 = "media_player.googlehome0056"
-version = 1
+version = 2
 number = 2
 list_id = "RDDgI_Lgv2To0"
 list_song_id = ["S2JAeuwjeN4", "IMRdRGWXHnU", "RBQ-IoHfimQ", "i0avdvFMghs"]

@@ -9,7 +9,6 @@ from const import MODE, TOKEN_DEV, HOST_DEV, ROOT_DIR_PROD, SERVER_STREAM_DEV, E
 import re
 from logging import getLogger
 import json
-from pytubefix import YouTube
 import yt_dlp
 logger = getLogger(__name__)
 
@@ -62,48 +61,32 @@ def getVideoId(url):
         return id
     return ""
 
-def get_name_of_song(song_id, name):
-    if name != "":
-        return name
-    url_yt = "https://www.youtube.com/watch?v=" + song_id
-    yt = YouTube(url_yt)
-    return yt.title
-
-def return_song_info_from_id(media_song_id, id, version, name = ""):
+def return_song_info_from_id(media_id, id, version, name = ""):
     song_info = {}
-    song_info["name"] = get_name_of_song(id, name)
+    song_info["name"] = name
     song_info["id"] = id
-    song_info["length"] = get_length_from_id(id)
     song_info["version"] = version
     if version == 1:
-        song_info["url"] = return_url_from_id_javis(id)
+        url, length = return_song_info_from_id_javis(id)
+        song_info["url"] = url
+        song_info["length"] = length
         return song_info
     else:
         if MODE == 'dev':
-            song_info["url"] = get_server_stream() + '/stream?media_song_id=' + media_song_id
+            song_info["url"] = get_server_stream() + '/stream?media_id=' + media_id + '&song_id=' + id
         else:
-            song_info["url"] = 'http://' + get_local_ip() + ':2024/stream?media_song_id=' + media_song_id 
+            song_info["url"] = 'http://' + get_local_ip() + ':2024/stream?media_id=' + media_id + '&song_id=' + id
     return song_info
 
-def get_length_from_id(id):
-    yt_url = "https://www.youtube.com/watch?v=" + id
-    yt = YouTube(yt_url)
-    return yt.length
-
-def return_url_from_id_javis(id):
-    url = "https://push.javisco.com/api/youtube-parse?id=" + id
+def return_song_info_from_id_javis(id):
+    url = "https://push.javisco.com/api/v2/youtube-parse?id=" + id
     payload = {}
     headers = {}
     response = requests.request("GET", url, headers=headers, data=payload)
-    result = json.loads(response.text)["url"]
-    return result
-
-def return_info_from_id_javis(id):
-    url = return_url_from_id_javis(id)
-    yt_url = "https://www.youtube.com/watch?v=" + id
-    yt = YouTube(yt_url)
-    result = {"url": url, "length": yt.length}
-    return result
+    result = json.loads(response.text)
+    url, length = result.get("url"), int(result.get("length"))
+    length = int(length/1000)
+    return url, length
 
 def get_local_host():
     if MODE == 'dev':
@@ -191,8 +174,7 @@ def get_service_play(media_id, media_content_id, title):
 def get_playlist_play(media_id, name, song_id, version):
     playlist = {}
     # get song info
-    media_song_id = media_id + "_" + song_id
-    playlist[media_song_id] = return_song_info_from_id(media_song_id,song_id,version, name)  
+    playlist[song_id] = return_song_info_from_id(media_id,song_id,version, name)  
     return playlist
 
 def get_playlist_by_name(media_id, name, number, version):
@@ -200,16 +182,14 @@ def get_playlist_by_name(media_id, name, number, version):
     # get song info
     list_song_id = return_list_song_id_from_name(name, number)
     for song_id in list_song_id:
-        media_song_id = media_id + "_" + song_id
-        playlist[media_song_id] = return_song_info_from_id(media_song_id,song_id,version, name)  
+        playlist[song_id] = return_song_info_from_id(media_id, song_id,version, name)  
     return playlist
 
 def get_playlist_from_id_url(list_id, media_id,  version):
     playlist = {}
     list_song_id = get_id_in_playlist(list_id)
     for song_id in list_song_id:
-        media_song_id = media_id + "_" + song_id
-        playlist[media_song_id] = return_song_info_from_id(media_song_id, song_id, version)
+        playlist[song_id] = return_song_info_from_id(media_id, song_id, version)
     return playlist
 
 def getListId(url):
@@ -296,7 +276,7 @@ def return_the_same_id(id, number):
 
 def read_data_from_json(file):
     try:
-        with open(file) as f:
+        with open(file, encoding="utf8") as f:
             data = json.load(f)
             if not data:
                 return {}
@@ -306,10 +286,13 @@ def read_data_from_json(file):
 
 def write_data_to_json(file, data):
     with open(file, 'w', encoding="utf-8") as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f,ensure_ascii=False, indent=4)
 
-def get_best_stream_url(id):
+def get_best_stream_song(id):
     url_ytm = YTM_DOMAIN + "/watch?v=" + id
+    video_url = ""
+    length = 0
+    song_name = ""
     ydl_opts = {
         "quiet": True,
         "no_warnings": True,
@@ -319,12 +302,15 @@ def get_best_stream_url(id):
         try:
             start_time = time.time()
             info = ydl.extract_info(url_ytm, download=False)
+            format_selector = ydl.build_format_selector("m4a/bestaudio")
+            stream_format = next(format_selector({"formats": info["formats"]}), None)
+            video_url = stream_format.get("url") if stream_format else None
+            length = info.get("duration", None)
+            song_name = info.get("title", None)
             print(f"Info extracted in {time.time() - start_time:.2f}s")
         except yt_dlp.utils.DownloadError as err:
             print(f"Error extracting info: {err}")
             return ""
 
-        format_selector = ydl.build_format_selector("m4a/bestaudio")
-        stream_format = next(format_selector({"formats": info["formats"]}), None)
-        video_url = stream_format.get("url") if stream_format else None
-    return video_url
+
+    return video_url, length, song_name

@@ -5,7 +5,7 @@ TOKEN_DEV = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIxZGQwYjNlNWE2ZTc0ZT
 HOST_DEV = "http://192.168.1.15:8123"
 # HOST_DEV = "http://192.168.1.32:8123"
 # SERVER_STREAM_DEV = "https://improved-liger-tops.ngrok-free.app"
-SERVER_STREAM_DEV = "http://192.168.1.57:2024"
+SERVER_STREAM_DEV = "http://192.168.1.79:2024"
 # SERVER_STREAM_DEV = "http://192.168.1.32:2024"
 # FFMPEG_PATH = r"C:\ffmpeg\bin\ffmpeg.exe" 
 FFMPEG_PATH = r"ffmpeg"
@@ -13,7 +13,10 @@ YTB_PATH = r"yt-dlp"
 # YTB_PATH = r"C:/ytb/yt-dlp"
 YTM_DOMAIN = "https://www.youtube.com"
 ENABLE_LOG = True
-
+PLAYLIST_INFO_PATH = "playlist_info/"
+import os
+if not os.path.exists(PLAYLIST_INFO_PATH):
+    os.makedirs(PLAYLIST_INFO_PATH)
 # MODE = 'dev'
 
 MODE = 'prod'

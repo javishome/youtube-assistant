@@ -1,7 +1,7 @@
 from flask import request
-from utils import *
+from utils.utils_functions import *
 from model.media import Media, mediaControl
-
+from const import PLAYLIST_INFO_PATH
 
 def play():
     """
@@ -25,10 +25,9 @@ def play():
         media = Media(media_id)
         mediaControl.processes[media_id] = media
     # extract playlist and save to json file
-    playlists_dict = read_data_from_json("playlists.json")
+    path = PLAYLIST_INFO_PATH + media_id + ".json"
     playlist = get_playlist_play(media_id, name, song_id, version)
-    playlists_dict[media_id] = playlist
-    write_data_to_json("playlists.json", playlists_dict)
+    write_data_to_json(path, playlist)
     # play media
     media.play_media(playlist)
     return "Success", 200
@@ -54,10 +53,9 @@ def play_playlist():
         media = Media(media_id)
     mediaControl.processes[media_id] = media
     # extract playlist and save to json file
-    playlists_dict = read_data_from_json("playlists.json")
+    path = PLAYLIST_INFO_PATH + media_id + ".json"
     playlist = get_playlist_from_id_url(list_id, media_id,  version)
-    playlists_dict[media_id] = playlist
-    write_data_to_json("playlists.json", playlists_dict)
+    write_data_to_json(path, playlist)
     # play media
     media.play_media(playlist)
     return "Success", 200
@@ -84,10 +82,9 @@ def play_by_name():
         media = Media(media_id)
         mediaControl.processes[media_id] = media
     # extract playlist and save to json file
-    playlists_dict = read_data_from_json("playlists.json")
+    path = PLAYLIST_INFO_PATH + media_id + ".json"
     playlist = get_playlist_by_name(media_id, name,number, version)
-    playlists_dict[media_id] = playlist
-    write_data_to_json("playlists.json", playlists_dict)
+    write_data_to_json(path, playlist)
     # play media
     media.play_media(playlist)
     return "Success", 200
