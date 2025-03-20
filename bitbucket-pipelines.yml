@@ -2,7 +2,7 @@ image: python:3.13
 
 pipelines:
     branches:
-        main:
+        master:
             - step:
                   script:
                       - rm -rf ./music_server
