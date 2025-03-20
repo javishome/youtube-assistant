@@ -1,0 +1,32 @@
+name: Create Release 2024_12_4
+
+on:
+  push:
+    branches:
+      - main  # Chỉ chạy khi có thay đổi trên nhánh main
+    paths:
+      - "custom_components/youtube_assistant/**"  # Chỉ trigger khi manifest.json thay đổi
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from manifest.json
+        id: get_version
+        run: echo "VERSION=$(jq -r '.version' custom_components/youtube_assistant/manifest.json)" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ env.VERSION }}"
+          release_name: "Release v${{ env.VERSION }}"
+          body: "### Changelog\n\n- Cập nhật v${{ env.VERSION }}."
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

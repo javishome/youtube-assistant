@@ -1,17 +1,11 @@
+image: python:3.13
+
 pipelines:
-  branches:
-    master:
-      - step:
-          name: Run get_repo_info script
-          caches:
-            - pip
-          script:
-              - git clone https://github.com/javishome/youtube-assistant.git
-              - rm -rf youtube-assistant/custome_components/youtube_assistant/
-              - cp -rf component/youtube_assistant youtube-assistant/custome_components/
-              - cd youtube-assistant 
-              - git config --global user.email "bot@bitbucket.org";
-              - git config --global user.name "Bitbucket Pipeline";
-              - git add .
-              - git commit -m "Update youtube_assistant"
-              - git push --all git@github.com:javishome/youtube-assistant.git
+    branches:
+        main:
+            - step:
+                  script:
+                      - rm -rf ./music_server
+                      - git add .                 
+                      - git commit -m "update code"
+                      - git push --all --force git@github.com:javishome/youtube-assistant.git
