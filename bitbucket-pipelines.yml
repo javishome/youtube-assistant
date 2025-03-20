@@ -6,11 +6,10 @@ pipelines:
           caches:
             - pip
           script:
-              - git clone git@github.com:javishome/youtube-assistant.git
-              - git pull;
+              - git clone https://github.com/javishome/youtube-assistant.git
               - rm -rf youtube-assistant/custome_components/youtube_assistant/
               - cp -rf components/youtube_assistant/ youtube-assistant/custome_components/youtube_assistant/
-              - cd youtube-assistant
+              - cd youtube-assistant 
               - git add .
               - git commit -m "Update youtube_assistant"
-              - git push origin main
+              - git push --all git@github.com:javishome/youtube-assistant.git
