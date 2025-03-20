@@ -3,7 +3,7 @@ name: Create Release 2024_12_4
 on:
   push:
     branches:
-      - main  # Chỉ chạy khi có thay đổi trên nhánh main
+      - master  # Chỉ chạy khi có thay đổi trên nhánh main
     paths:
       - "custom_components/youtube_assistant/**"  # Chỉ trigger khi manifest.json thay đổi
 
