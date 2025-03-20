@@ -1,0 +1,6 @@
+{
+    "name": "Youtube Assistant",
+    "render_readme": true,
+    "homeassistant": "2022.2.1",
+    "iot_class": "Cloud Polling"
+  }
