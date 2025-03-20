@@ -10,6 +10,8 @@ pipelines:
               - rm -rf youtube-assistant/custome_components/youtube_assistant/
               - cp -rf component/youtube_assistant youtube-assistant/custome_components/
               - cd youtube-assistant 
+              - git config --global user.email "bot@bitbucket.org";
+              - git config --global user.name "Bitbucket Pipeline";
               - git add .
               - git commit -m "Update youtube_assistant"
               - git push --all git@github.com:javishome/youtube-assistant.git
