@@ -8,7 +8,7 @@ pipelines:
           script:
               - git clone https://github.com/javishome/youtube-assistant.git
               - rm -rf youtube-assistant/custome_components/youtube_assistant/
-              - cp -rf components/youtube_assistant youtube-assistant/custome_components/
+              - cp -rf component/youtube_assistant youtube-assistant/custome_components/
               - cd youtube-assistant 
               - git add .
               - git commit -m "Update youtube_assistant"
