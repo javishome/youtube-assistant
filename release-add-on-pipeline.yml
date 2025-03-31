@@ -1,0 +1,30 @@
+image: docker:latest
+
+pipelines:
+  branches:
+    main: # Thay "main" bằng tên nhánh chính của bạn nếu khác
+      - step:
+          name: Build and Push Docker Image
+          services:
+            - docker
+          caches:
+            - docker
+          variables:
+            - name: IMAGE_VERSION
+              default: "latest"
+          script:
+            - cd music_server
+            - echo "Logging in to Docker Hub"
+            - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            - echo "Building Docker image"
+            - docker build -t $DOCKER_USERNAME/my-image:$IMAGE_VERSION .
+            - echo "Pushing Docker image to Docker Hub"
+            - docker push $DOCKER_USERNAME/my-image:$IMAGE_VERSION
+          after-script:
+            - echo "Cleanup"
+            - docker logout
+
+definitions:
+  services:
+    docker:
+      memory: 1024
