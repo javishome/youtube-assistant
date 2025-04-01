@@ -23,6 +23,8 @@ pipelines:
                     - mkdir -p ~/.ssh
                     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
                     - chmod 600 ~/.ssh/id_rsa
+                    - eval $(ssh-agent -s)
+                    - ssh-add ~/.ssh/id_rsa
                     - ssh-keyscan github.com bitbucket.org >> ~/.ssh/known_hosts
                     - export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
                     - ls -la
