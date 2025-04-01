@@ -5,7 +5,14 @@ pipelines:
         master:
             - step:
                   script:
-                      - rm -rf ./music_server
-                      - git add .                 
-                      - git commit -m "update code"
-                      - git push --all --force git@github.com:javishome/youtube-assistant.git
+                    - apk add --no-cache openssh
+                    - mkdir -p ~/.ssh
+                    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/bitbucket_rsa
+                    - chmod 600 ~/.ssh/bitbucket_rsa
+                    - ssh-keyscan github.com bitbucket.org >> ~/.ssh/known_hosts
+                    - ssh -T git@github.com  # Kiểm tra kết nối SSH\
+                    - git push --all git@github.com:javishome/youtube_assistant_addon.git
+                    - rm -rf ./music_server
+                    - git add .                 
+                    - git commit -m "update code"
+                    - git push --all --force git@github.com:javishome/youtube-assistant.git
