@@ -30,7 +30,7 @@ pipelines:
                     - export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
                     - ls -la
                     - git remote -v
-                    # - ssh -T git@github.com
+                    - ssh -T git@github.com
                     - git clone git@github.com:javishome/youtube_assistant_addon.git
                     - ls -la
                     # - rm -rf ./music_server
