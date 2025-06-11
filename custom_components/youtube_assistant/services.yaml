@@ -47,6 +47,14 @@ play_song:
       required: False
       selector:
         text:
+    number:
+      description: Number of song in list
+      example: 1
+      required: False
+      selector:
+        number:
+          min: 1
+          max: 10
 
 play_media:
   name: Play Media

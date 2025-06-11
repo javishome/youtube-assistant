@@ -33,6 +33,14 @@ SERVICE_SONG = vol.Schema({
     vol.Optional(ATTR_NAME, default=""): cv.string,
 })
 
+SERVICE_SONG_OLD = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
+    vol.Optional(ATTR_SONG_ID, default=""): cv.string,
+    # vol.Optional(ATTR_URL, default=""): cv.string,
+    vol.Optional(ATTR_NAME, default=""): cv.string,
+    vol.Optional(ATTR_NUMBER, default=1): cv.Number,
+})
+
 SERVICE_LIST = vol.Schema({
     vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
     vol.Optional(ATTR_LIST_ID, default=""): cv.string,
@@ -153,7 +161,7 @@ class PlayerMedia:
                 requests.post(self.url + "/media/previous", json=data)
 
     def register_services(self):
-        self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG, self.tts_handler, schema=SERVICE_SONG)
+        self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG, self.tts_handler, schema=SERVICE_SONG_OLD)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_MEDIA, self.tts_handler, schema=SERVICE_SONG)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST, self.tts_handler, schema=SERVICE_LIST)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST_STREAM, self.tts_handler, schema=SERVICE_LIST)
