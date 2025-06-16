@@ -107,7 +107,7 @@ class PlayerMedia:
                     "version": "1"
                 }
                 requests.post(self.url + api_play, json=data)
-            elif service.service == SERVICE_PLAY_MEDIA:
+            elif service.service == SERVICE_PLAY_MEDIA_STREAM:
                 song_id = service.data.get(ATTR_SONG_ID)
                 # url = service.data.get(ATTR_URL)
                 name = service.data.get(ATTR_NAME)
