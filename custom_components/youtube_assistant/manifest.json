@@ -1,14 +1,14 @@
 {
   "domain": "youtube_assistant",
   "name": "YOUTUBE ASSISTANT",
-  "version": "1.1",
+  "version": "1.2",
   "documentation": "https://github.com/dungnguyen",
   "dependencies": [],
 "codeowners": ["Dũng Nguyễn: javisco"],
   "requirements": ["pytube==15.0.0"],
   "iot_class": "cloud_polling",
   "updater": {
-    "version": "1.0.3",
+    "version": "1.0.4",
     "releaseNotes": "-- Add manifest file",
     "files": [
       "__init__.py",

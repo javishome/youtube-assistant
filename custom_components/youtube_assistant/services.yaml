@@ -12,6 +12,13 @@ play_list:
       default: RDDgI_Lgv2To0
       selector:
         text:
+    name:
+      description: Name of playlist
+      example: Nhạc hay nhất
+      required: False
+      default: Nhạc hay nhất
+      selector:
+        text:
 
 play_list_stream:
   name: Play playlist stream
@@ -25,6 +32,13 @@ play_list_stream:
       example: RDDgI_Lgv2To0
       required: True
       default: RDDgI_Lgv2To0
+      selector:
+        text:
+    name:
+      description: Name of playlist
+      example: Nhạc hay nhất
+      required: False
+      default: Nhạc hay nhất
       selector:
         text:
 
@@ -56,8 +70,8 @@ play_song:
           min: 1
           max: 10
 
-play_media:
-  name: Play Media
+play_media_stream:
+  name: Play Media Stream
   description: Play song in Youtube stream
   target:
     entity:

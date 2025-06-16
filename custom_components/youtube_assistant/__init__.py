@@ -11,7 +11,7 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = 'youtube_assistant'
 
 SERVICE_PLAY_SONG = 'play_song'
-SERVICE_PLAY_MEDIA = 'play_media'
+SERVICE_PLAY_MEDIA_STREAM = 'play_media_stream'
 SERVICE_PLAY_LIST = 'play_list'
 SERVICE_PLAY_LIST_STREAM = 'play_list_stream'
 SERVICE_PLAY_SONG_TITLE = 'play_song_title'
@@ -45,6 +45,7 @@ SERVICE_LIST = vol.Schema({
     vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids,
     vol.Optional(ATTR_LIST_ID, default=""): cv.string,
     # vol.Optional(ATTR_URL, default=""): cv.string,
+    vol.Optional(ATTR_NAME, default=""): cv.string,
 })
 
 SERVICE_SONG_TITLE = vol.Schema({
@@ -162,7 +163,7 @@ class PlayerMedia:
 
     def register_services(self):
         self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG, self.tts_handler, schema=SERVICE_SONG_OLD)
-        self.hass.services.register(DOMAIN, SERVICE_PLAY_MEDIA, self.tts_handler, schema=SERVICE_SONG)
+        self.hass.services.register(DOMAIN, SERVICE_PLAY_MEDIA_STREAM, self.tts_handler, schema=SERVICE_SONG)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST, self.tts_handler, schema=SERVICE_LIST)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST_STREAM, self.tts_handler, schema=SERVICE_LIST)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_NEXT, self.tts_handler, schema=SERVICE_NEXT)
