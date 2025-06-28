@@ -48,6 +48,7 @@ def play_media_in_process(current_song_index, playlist, media_id):
     is_error = False
     # extract stream url of first song
     save_media_to_json(media_id, current_song_index.value)
+    is_stop_service = False
     for idx, song_id in enumerate(playlist.keys()):
         if idx < current_song_index.value:
             continue
@@ -69,8 +70,8 @@ def play_media_in_process(current_song_index, playlist, media_id):
         count = 0
         while True:
             time.sleep(1)
-            state = get_state(media_id)
-            if state == "playing":
+            state, media_content_id_real = get_state(media_id)
+            if state == "playing" and media_content_id_real == media_content_id:
                 break
             count +=1
             if count > 30:
@@ -86,26 +87,34 @@ def play_media_in_process(current_song_index, playlist, media_id):
         while True:
             duration_real = time.time() - start_time
             time.sleep(5)
-            state = get_state(media_id)
-            if state == "idle":
-                write_log("finish: " + song_id)
-                break
-            elif state == "paused":
-                write_log("paused: " + song_id)
-                pause_seconds += 5
-            elif state == "playing":
-                write_log("playing: " + song_id)
-            elif state == "Off":
-                write_log("off: " + song_id)
-                break
+            state, media_content_id_real = get_state(media_id)
+            if media_content_id_real == media_content_id:
+                if state == "idle":
+                    write_log("finish: " + song_id)
+                    break
+                elif state == "paused":
+                    write_log("paused: " + song_id)
+                    pause_seconds += 5
+                elif state == "playing":
+                    write_log("playing: " + song_id)
+                elif state == "Off":
+                    write_log("off: " + song_id)
+                    break
 
-            if duration_real - pause_seconds > length:
-                call_stop(media_id)
-                write_log("finish: " + song_id)
+                if duration_real - pause_seconds > length:
+                    call_stop(media_id)
+                    write_log("finish: " + song_id)
+                    break
+            else:
+                is_stop_service = True
                 break
-        state = get_state(media_id)
+        
+        state, media_content_id_real = get_state(media_id)
         if state.lower() == "off":
             write_log("error: media off" + song_id)
+            break
+        if is_stop_service:
+            write_log("stop service: " + song_id)
             break
 
 def save_media_to_json(media_id, song_index):

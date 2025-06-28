@@ -44,6 +44,9 @@ def return_list_song_id_from_name(name, number):
     payload = {}
     headers = {}    
     response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code != 200:
+        logger.error(f"Error fetching song list for name {name}: {response.status_code} - {response.text}")
+        return []
     list_info = json.loads(response.text)
     if number < len(list_info):
         list_info = list_info[:number]
@@ -82,7 +85,11 @@ def return_song_info_from_id_javis(id):
     url = "https://push.javisco.com/api/v2/youtube-parse?id=" + id
     payload = {}
     headers = {}
+    
     response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code != 200:
+        logger.error(f"Error fetching song info for ID {id}: {response.status_code} - {response.text}")
+        return "", 0
     result = json.loads(response.text)
     url, length = result.get("url"), int(result.get("length"))
     length = int(length/1000)
@@ -135,7 +142,12 @@ def get_state(entity_id):
     }
     try:
         response = requests.get(url, headers=headers)
-        return response.json().get('state')
+        if response.status_code != 200:
+            write_log(f"error: get state {response.status_code} - {response.text}")
+            return "error", ""
+        state = response.json().get('state')
+        media_content_id = response.json().get('attributes', {}).get('media_content_id', '')
+        return state, media_content_id
     except:
         write_log("error: get state")
         return "error"
@@ -205,6 +217,9 @@ def get_id_in_playlist(play_list):
     headers = {}
 
     response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code != 200:
+        logger.error(f"Error fetching playlist items for ID {play_list}: {response.status_code} - {response.text}")
+        return []
     list = json.loads(response.text)["items"]
     list_playlist=[]
     for lis in list:
@@ -262,6 +277,9 @@ def return_the_same_id(id, number):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code != 200:
+        logger.error(f"Error fetching secondary results for ID {id}: {response.status_code} - {response.text}")
+        return []
 
     list = json.loads(response.text)["response"]["contents"]["twoColumnWatchNextResults"]["secondaryResults"]["secondaryResults"]["results"]
     list_id = []
