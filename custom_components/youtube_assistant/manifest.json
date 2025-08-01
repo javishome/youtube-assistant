@@ -1,7 +1,7 @@
 {
   "domain": "youtube_assistant",
   "name": "YOUTUBE ASSISTANT",
-  "version": "1.4",
+  "version": "1.5",
   "documentation": "https://github.com/dungnguyen",
   "dependencies": [],
 "codeowners": ["Dũng Nguyễn: javisco"],

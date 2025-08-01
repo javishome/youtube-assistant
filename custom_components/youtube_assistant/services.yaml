@@ -89,6 +89,14 @@ play_media_stream:
       required: False
       selector:
         text:
+    number:
+      description: Number of song in list
+      example: 1
+      required: False
+      selector:
+        number:
+          min: 1
+          max: 10
 
 play_song_title:
   name: Play song by title
