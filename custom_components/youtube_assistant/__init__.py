@@ -163,7 +163,7 @@ class PlayerMedia:
 
     def register_services(self):
         self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG, self.tts_handler, schema=SERVICE_SONG_OLD)
-        self.hass.services.register(DOMAIN, SERVICE_PLAY_MEDIA_STREAM, self.tts_handler, schema=SERVICE_SONG)
+        self.hass.services.register(DOMAIN, SERVICE_PLAY_MEDIA_STREAM, self.tts_handler, schema=SERVICE_SONG_OLD)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST, self.tts_handler, schema=SERVICE_LIST)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_LIST_STREAM, self.tts_handler, schema=SERVICE_LIST)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_NEXT, self.tts_handler, schema=SERVICE_NEXT)

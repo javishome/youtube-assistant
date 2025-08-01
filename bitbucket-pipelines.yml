@@ -5,7 +5,6 @@ pipelines:
         master:
             - step:
                   script:
-                      - rm -rf ./music_server
                       - git add .                 
                       - git commit -m "update code"
                       - git push --all --force git@github.com:javishome/youtube-assistant.git
