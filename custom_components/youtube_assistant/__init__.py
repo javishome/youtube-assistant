@@ -3,6 +3,9 @@ import requests
 import voluptuous as vol
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.helpers import config_validation as cv, service
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+
 
 import logging
 
@@ -171,7 +174,33 @@ class PlayerMedia:
         self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG_TITLE, self.tts_handler, schema=SERVICE_SONG_TITLE)
         self.hass.services.register(DOMAIN, SERVICE_PLAY_SONG_TITLE_STREAM, self.tts_handler, schema=SERVICE_SONG_TITLE) 
 
+
 def setup(hass, config):
+    """Set up Youtube Assistant services (once, globally)."""
     youtube_assistant = PlayerMedia(hass)
     youtube_assistant.register_services()
+    hass.data.setdefault(DOMAIN, {})
+    return True   # 🔥 phải có dòng này
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+    """Set up Youtube Assistant from a config entry."""
+    # Chỉ lưu thông tin entry, không đăng ký lại service
+    hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][entry.entry_id] = {}
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry for Youtube Assistant."""
+    if DOMAIN not in hass.data:
+        return True
+
+    # Xóa instance trong hass.data
+    hass.data[DOMAIN].pop(entry.entry_id, None)
+
+    # Nếu không còn entry nào → xóa luôn domain
+    if not hass.data[DOMAIN]:
+        hass.data.pop(DOMAIN)
+
     return True

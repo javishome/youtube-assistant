@@ -1,0 +1,15 @@
+{
+  "config": {
+    "title": "Youtube Assistant",
+    "step": {
+      "user": {
+        "title": "Youtube Assistant Setup",
+        "description": "Press Submit to create configuration for Youtube Assistant.",
+        "data": {}
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single instance of Youtube Assistant is allowed"
+    }
+  }
+}
